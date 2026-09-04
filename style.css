@@ -1,4 +1,4 @@
-    :root {
+:root {
       --bg:        #080c10;
       --bg2:       #0d1117;
       --bg3:       #111820;
@@ -258,6 +258,67 @@
       margin-top: 4px;
     }
 
+    /* ─── HERO LAYOUT (two-column with photo) ─── */
+    .hero-layout {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 4rem;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-content {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ─── HERO PHOTO ─────────────────────────── */
+    .hero-photo-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .hero-photo-frame {
+      position: relative;
+      width: 300px;
+      height: 340px;
+      clip-path: polygon(16px 0%, 100% 0%, calc(100% - 16px) 100%, 0% 100%);
+      border: 2px solid var(--green);
+      box-shadow:
+        0 0 25px var(--green-glow),
+        0 0 60px rgba(0,255,136,0.12),
+        inset 0 0 25px rgba(0,255,136,0.04);
+      background: var(--bg3);
+    }
+
+    .hero-photo-frame::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        160deg,
+        rgba(0,255,136,0.08) 0%,
+        transparent 40%,
+        transparent 60%,
+        rgba(0,255,136,0.04) 100%
+      );
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .hero-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+      filter: contrast(1.05) brightness(0.97);
+    }
+
     /* ─── SECTION SHARED ─────────────────────── */
     section {
       position: relative;
@@ -301,10 +362,11 @@
     #about { background: var(--bg2); }
 
     .about-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      align-items: start;
+      display: block;
+    }
+
+    .about-text {
+      overflow: hidden; /* establishes a new block formatting context so the float is contained */
     }
 
     .about-text p {
@@ -317,6 +379,32 @@
 
     .about-text p strong { color: var(--green); font-weight: 600; }
 
+    .about-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 1.25rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .about-list li {
+      font-size: 1.05rem;
+      color: var(--text-mid);
+      padding-left: 1.3rem;
+      position: relative;
+      line-height: 1.75;
+    }
+
+    .about-list li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: var(--cyan);
+      font-size: 0.85rem;
+      top: 0.2rem;
+    }
+
     .terminal-box {
       background: var(--bg3);
       border: 1px solid var(--border);
@@ -324,6 +412,10 @@
       font-family: var(--mono);
       font-size: 0.8rem;
       overflow: hidden;
+      float: right;
+      width: 400px;
+      max-width: 100%;
+      margin: 0 0 2rem 3rem;
     }
 
     .terminal-bar {
@@ -356,9 +448,8 @@
     #skills { background: var(--bg); }
 
     .skills-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.5rem;
+      columns: 3 260px;
+      column-gap: 1.5rem;
     }
 
     .skill-card {
@@ -368,6 +459,12 @@
       position: relative;
       overflow: hidden;
       transition: border-color 0.3s, transform 0.3s;
+      break-inside: avoid;
+      -webkit-column-break-inside: avoid;
+      display: inline-block;
+      width: 100%;
+      margin-bottom: 1.5rem;
+      vertical-align: top;
     }
 
     .skill-card::before {
@@ -422,9 +519,8 @@
     #projects { background: var(--bg2); }
 
     .projects-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 2rem;
+      columns: 2 340px;
+      column-gap: 2rem;
     }
 
     .project-card {
@@ -435,6 +531,9 @@
       transition: all 0.3s;
       display: flex;
       flex-direction: column;
+      break-inside: avoid;
+      -webkit-column-break-inside: avoid;
+      margin-bottom: 2rem;
     }
 
     .project-card:hover {
@@ -899,12 +998,29 @@
     .delay-5 { animation-delay: 0.75s; }
 
     /* ─── RESPONSIVE ─────────────────────────── */
+    @media (max-width: 900px) {
+      .hero-layout {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+      }
+      .hero-photo-wrap {
+        order: -1;
+      }
+      .hero-photo-frame {
+        width: 200px;
+        height: 225px;
+      }
+    }
+
     @media (max-width: 768px) {
       nav { padding: 1rem 1.5rem; }
       .nav-links { display: none; }
       section, #hero { padding: 4rem 1.5rem; }
-      .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .terminal-box { float: none; width: 100%; margin: 0 0 2rem 0; }
       .hero-stats { gap: 1.5rem; flex-wrap: wrap; }
       footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+      .hero-photo-frame {
+        width: 160px;
+        height: 180px;
+      }
     }
-  
